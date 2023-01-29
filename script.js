@@ -1,10 +1,10 @@
 "use strict";
 
 let taskList = [
-    // {"id":1, "taskName": "Task 1"},
-    // {"id":2, "taskName": "Task 2"},
-    // {"id":3, "taskName": "Task 3"},
-    // {"id":4, "taskName": "Task 4"},
+    // {"id":1, "taskName": "Task 1", "status": "completed"}, 
+    // {"id":2, "taskName": "Task 2", "status": "pending"},
+    // {"id":3, "taskName": "Task 3", "status": "completed"},
+    // {"id":4, "taskName": "Task 4", "status": "pending"},
 ];
 
 let editId;
@@ -24,11 +24,14 @@ function displayTask() {
         ul.innerHTML = "<p class='p-3 m-0'>Your task list is empty.</p>"
     } else {
         for(let task of taskList) {
+
+            let completed = task.status == "completed" ? "checked": "";
+
             let li = `
                 <li class="task list-group-item">
                     <div class="form-check">
-                        <input type="checkbox" id="${task.id}" class="form-check-input">
-                        <label for="${task.id}" class="form-check-label">${task.taskName}</label>
+                        <input type="checkbox" onclick="updateStatus(this)" id="${task.id}" class="form-check-input"${completed}>
+                        <label for="${task.id}" class="form-check-label ${completed}">${task.taskName}</label>
                     </div>
                     <div class="dropdown">
                         <button class="btn btn-link dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -120,3 +123,25 @@ btnClear.addEventListener("click", function() {
     displayTask();
 })
 
+function updateStatus(selectedTask) {
+    // console.log(selectedTask.parentElement.lastElementChild)
+    let label = selectedTask.nextElementSibling;
+    let status;
+
+    if(selectedTask.checked) {
+        label.classList.add("checked");
+        status = "completed";
+    } else {
+        label.classList.remove("checked");
+        status = "pending";
+    }
+
+    for (let task of taskList) {
+        if (task.id == selectedTask.id) {
+            task.status = status
+        }
+    }
+
+    console.log(taskList);
+
+}
