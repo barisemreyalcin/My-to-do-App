@@ -7,6 +7,11 @@ let taskList = [
     // {"id":4, "taskName": "Task 4"},
 ];
 
+let editId;
+let isEditTask = false;
+
+let taskInput = document.querySelector("#txtTaskName");
+
 displayTask();
 
 function displayTask() {
@@ -28,7 +33,7 @@ function displayTask() {
                     </button>
                     <ul class="dropdown-menu">
                         <li><a onclick="deleteTask(${task.id})" class="dropdown-item" href="#"><i class="fa-solid fa-trash-can"></i> Delete</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fa-solid fa-pen"></i> Edit</a></li>
+                        <li><a onclick='editTask(${task.id}, "${task.taskName}")' class="dropdown-item" href="#"><i class="fa-solid fa-pen"></i> Edit</a></li>
                     </ul>
                  </div>            
             </li>
@@ -48,12 +53,22 @@ document.querySelector("#btnAddNewTask").addEventListener("keypress", function()
 
 function newTask(event) {
     
-    let taskInput = document.querySelector("#txtTaskName");
-
     if(taskInput.value == "") {
         alert("Enter a task name");
     } else {
-        taskList.push({"id": taskList.length + 1, "taskName": taskInput.value});
+        if(!isEditTask) {
+            // add
+            taskList.push({"id": taskList.length + 1, "taskName": taskInput.value});
+        } else {
+            // edit
+            for(let task of taskList) {
+                if(task.id == editId) {
+                    task.taskName = taskInput.value;
+                }
+                isEditTask = false;
+            }
+
+        }
         taskInput.value = "";
         displayTask();
     }
@@ -82,4 +97,15 @@ function deleteTask(id) {
     displayTask();
 }
 
+function editTask(taskId, taskName) {
+    editId = taskId;
+    isEditTask = true;
+    taskInput.value = taskName;
+    taskInput.focus();
+    taskInput.classList.add("active");
+
+    // console.log("Edit id:", editId);
+    // console.log("Edit Mode:", isEditTask);
+    
+}
 
