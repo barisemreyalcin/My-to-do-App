@@ -10,38 +10,44 @@ let taskList = [
 let editId;
 let isEditTask = false;
 
-let taskInput = document.querySelector("#txtTaskName");
+const taskInput = document.querySelector("#txtTaskName");
+const btnClear = document.querySelector("#btnClear");
 
 displayTask();
 
 function displayTask() {
     
     let ul = document.getElementById("task-list");
-
     ul.innerHTML = "";
 
-    for(let task of taskList) {
-        let li = `
-            <li class="task list-group-item">
-                <div class="form-check">
-                    <input type="checkbox" id="${task.id}" class="form-check-input">
-                    <label for="${task.id}" class="form-check-label">${task.taskName}</label>
-                </div>
-                <div class="dropdown">
-                    <button class="btn btn-link dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="fa-solid fa-ellipsis"></i>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a onclick="deleteTask(${task.id})" class="dropdown-item" href="#"><i class="fa-solid fa-trash-can"></i> Delete</a></li>
-                        <li><a onclick='editTask(${task.id}, "${task.taskName}")' class="dropdown-item" href="#"><i class="fa-solid fa-pen"></i> Edit</a></li>
-                    </ul>
-                 </div>            
-            </li>
-        `;
-
-        ul.insertAdjacentHTML("beforeend", li);
-
+    if(taskList.length == 0) {
+        ul.innerHTML = "<p class='p-3 m-0'>Your task list is empty.</p>"
+    } else {
+        for(let task of taskList) {
+            let li = `
+                <li class="task list-group-item">
+                    <div class="form-check">
+                        <input type="checkbox" id="${task.id}" class="form-check-input">
+                        <label for="${task.id}" class="form-check-label">${task.taskName}</label>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-link dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-ellipsis"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a onclick="deleteTask(${task.id})" class="dropdown-item" href="#"><i class="fa-solid fa-trash-can"></i> Delete</a></li>
+                            <li><a onclick='editTask(${task.id}, "${task.taskName}")' class="dropdown-item" href="#"><i class="fa-solid fa-pen"></i> Edit</a></li>
+                        </ul>
+                     </div>            
+                </li>
+            `;
+    
+            ul.insertAdjacentHTML("beforeend", li);
+    
+        }
     }
+
+    
 }
 
 document.querySelector("#btnAddNewTask").addEventListener("click", newTask);
@@ -108,4 +114,9 @@ function editTask(taskId, taskName) {
     // console.log("Edit Mode:", isEditTask);
     
 }
+
+btnClear.addEventListener("click", function() {
+    taskList.splice(0, taskList.length);
+    displayTask();
+})
 
