@@ -1,10 +1,10 @@
 "use strict";
 
 let taskList = [
-    // {"id":1, "taskName": "Task 1", "status": "completed"}, 
-    // {"id":2, "taskName": "Task 2", "status": "pending"},
-    // {"id":3, "taskName": "Task 3", "status": "completed"},
-    // {"id":4, "taskName": "Task 4", "status": "pending"},
+    {"id":1, "taskName": "Task 1", "status": "completed"}, 
+    {"id":2, "taskName": "Task 2", "status": "pending"},
+    {"id":3, "taskName": "Task 3", "status": "completed"},
+    {"id":4, "taskName": "Task 4", "status": "pending"},
 ];
 
 let editId;
@@ -12,10 +12,11 @@ let isEditTask = false;
 
 const taskInput = document.querySelector("#txtTaskName");
 const btnClear = document.querySelector("#btnClear");
+const filters = document.querySelectorAll(".filters span");
 
-displayTask();
+displayTask("all");
 
-function displayTask() {
+function displayTask(filter) {
     
     let ul = document.getElementById("task-list");
     ul.innerHTML = "";
@@ -27,25 +28,27 @@ function displayTask() {
 
             let completed = task.status == "completed" ? "checked": "";
 
-            let li = `
-                <li class="task list-group-item">
-                    <div class="form-check">
-                        <input type="checkbox" onclick="updateStatus(this)" id="${task.id}" class="form-check-input"${completed}>
-                        <label for="${task.id}" class="form-check-label ${completed}">${task.taskName}</label>
-                    </div>
-                    <div class="dropdown">
-                        <button class="btn btn-link dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fa-solid fa-ellipsis"></i>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a onclick="deleteTask(${task.id})" class="dropdown-item" href="#"><i class="fa-solid fa-trash-can"></i> Delete</a></li>
-                            <li><a onclick='editTask(${task.id}, "${task.taskName}")' class="dropdown-item" href="#"><i class="fa-solid fa-pen"></i> Edit</a></li>
-                        </ul>
-                     </div>            
-                </li>
-            `;
-    
-            ul.insertAdjacentHTML("beforeend", li);
+            if (filter == task.status || filter == "all") {
+                
+                let li = `
+                    <li class="task list-group-item">
+                        <div class="form-check">
+                            <input type="checkbox" onclick="updateStatus(this)" id="${task.id}" class="form-check-input"${completed}>
+                            <label for="${task.id}" class="form-check-label ${completed}">${task.taskName}</label>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-link dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-solid fa-ellipsis"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a onclick="deleteTask(${task.id})" class="dropdown-item" href="#"><i class="fa-solid fa-trash-can"></i> Delete</a></li>
+                                <li><a onclick='editTask(${task.id}, "${task.taskName}")' class="dropdown-item" href="#"><i class="fa-solid fa-pen"></i> Edit</a></li>
+                            </ul>
+                        </div>            
+                    </li>
+                `;
+                ul.insertAdjacentHTML("beforeend", li);
+            }
     
         }
     }
@@ -60,6 +63,14 @@ document.querySelector("#btnAddNewTask").addEventListener("keypress", function()
     }
 });
 
+for (let span of filters) {
+    span.addEventListener("click", function() {
+        document.querySelector("span.active").classList.remove("active");
+        span.classList.add("active");
+        displayTask(span.id);
+    })
+}
+
 function newTask(event) {
     
     if(taskInput.value == "") {
@@ -67,7 +78,7 @@ function newTask(event) {
     } else {
         if(!isEditTask) {
             // add
-            taskList.push({"id": taskList.length + 1, "taskName": taskInput.value});
+            taskList.push({"id": taskList.length + 1, "taskName": taskInput.value, status: "pending"});
         } else {
             // edit
             for(let task of taskList) {
@@ -79,7 +90,7 @@ function newTask(event) {
 
         }
         taskInput.value = "";
-        displayTask();
+        displayTask(document.querySelector("span.active").id);
     }
 
     
@@ -103,7 +114,7 @@ function deleteTask(id) {
     // deletedId = taskList.findIndex(task => task.id == id);
 
     taskList.splice(deletedId, 1);
-    displayTask();
+    displayTask(document.querySelector("span.active").id);
 }
 
 function editTask(taskId, taskName) {
@@ -141,7 +152,5 @@ function updateStatus(selectedTask) {
             task.status = status
         }
     }
-
-    console.log(taskList);
 
 }

@@ -11,3 +11,20 @@
 .task label.checked {
     text-decoration: line-through;
 }
+
+.controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.filters span.active {
+    color: #0d59f2;
+}
+
+.filters span {
+    margin-right: 5px;
+    font-size: 15px;
+    color: #666666;
+    cursor: pointer;
+}
