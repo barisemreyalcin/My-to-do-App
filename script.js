@@ -1,11 +1,10 @@
 "use strict";
 
-let taskList = [
-    {"id":1, "taskName": "Task 1", "status": "completed"}, 
-    {"id":2, "taskName": "Task 2", "status": "pending"},
-    {"id":3, "taskName": "Task 3", "status": "completed"},
-    {"id":4, "taskName": "Task 4", "status": "pending"},
-];
+let taskList = [];
+
+if(localStorage.getItem("taskList") !== null) {
+    taskList = JSON.parse(localStorage.getItem("taskList"));
+}
 
 let editId;
 let isEditTask = false;
@@ -91,6 +90,7 @@ function newTask(event) {
         }
         taskInput.value = "";
         displayTask(document.querySelector("span.active").id);
+        localStorage.setItem("taskList", JSON.stringify(taskList));
     }
 
     
@@ -115,6 +115,7 @@ function deleteTask(id) {
 
     taskList.splice(deletedId, 1);
     displayTask(document.querySelector("span.active").id);
+    localStorage.setItem("taskList", JSON.stringify(taskList));
 }
 
 function editTask(taskId, taskName) {
@@ -131,6 +132,7 @@ function editTask(taskId, taskName) {
 
 btnClear.addEventListener("click", function() {
     taskList.splice(0, taskList.length);
+    localStorage.setItem("taskList", JSON.stringify(taskList));
     displayTask();
 })
 
@@ -152,5 +154,9 @@ function updateStatus(selectedTask) {
             task.status = status
         }
     }
+
+    displayTask(document.querySelector("span.active").id);
+
+    localStorage.setItem("taskList", JSON.stringify(taskList));
 
 }
